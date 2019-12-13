@@ -199,9 +199,56 @@ namespace newsly.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+        [Authorize(Roles = "Admin")]
+        public ActionResult Edit(string Id)
+        {
+            var admin = _context.Users.SingleOrDefault(n => n.Id == Id);
+            var ViewModel = new AdminSave
+            {
+                Id = admin.Id,
+                Name = admin.Name,
+                AdminName = admin.AdminName,
+                Email = admin.Email
+            };
+            return View(ViewModel);
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult Save(AdminSave admin)
+        {
+            var adminInDb = _context.Users.Single(n => n.Id == admin.Id);
 
+            if(!ModelState.IsValid)
+            {
+                return View("Edit", admin);
+            }
+
+            adminInDb.Email = admin.Email;
+            
+            adminInDb.Name = admin.Name;
+            
+            adminInDb.AdminName = admin.AdminName;
+
+            adminInDb.UserName = admin.Email;
+
+
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Admins");
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult Delete(string Id)
+        {
+            var admin = _context.Users.SingleOrDefault(n => n.Id == Id);
+          
+            if (admin == null)
+                return HttpNotFound();
+
+            _context.Users.Remove(admin);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Admins");
+        }
         //
-        // GET: /Account/ConfirmEmail
+        // GET: /Account/ConfirmEmail 
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {

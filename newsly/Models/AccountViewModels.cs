@@ -64,6 +64,9 @@ namespace newsly.Models
 
     public class RegisterViewModel
     {
+        public RegisterViewModel()
+        { Role = "Guest"; }
+
         [Required]
         public string Name { get; set; }
 

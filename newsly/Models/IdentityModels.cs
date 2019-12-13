@@ -28,6 +28,9 @@ namespace newsly.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Newsletter> Newsletters { get; set; }
+        public DbSet<Subscriber> Subscribers { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
